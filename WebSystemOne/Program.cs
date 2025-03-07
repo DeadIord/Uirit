@@ -14,16 +14,6 @@ builder.Services.AddDefaultIdentity<ApplicationUserModel>(options =>
     options.SignIn.RequireConfirmedAccount = false)
     .AddEntityFrameworkStores<ApplicationDb>();
 
-builder.Services.AddControllersWithViews();
-builder.Services.AddRazorPages();
-
-var app = builder.Build();
-
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
-}
 builder.Services.AddMassTransit(x =>
 {
     x.AddRequestClient<FeedBackResponse>();
@@ -46,6 +36,17 @@ builder.Services.AddMassTransit(x =>
         });
     });
 });
+
+builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
+
+var app = builder.Build();
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
 
 
 app.UseHttpsRedirection();
