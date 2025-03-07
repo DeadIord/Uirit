@@ -4,61 +4,46 @@
     ViewData["Title"] = "Регистрация";
 }
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-header text-center bg-primary text-white">
-                    <h2>@ViewData["Title"]</h2>
-                </div>
-                <div class="card-body">
-                    <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+<h1>@ViewData["Title"]</h1>
 
-                        <div class="form-group">
-                            <label asp-for="Input.Email"></label>
-                            <input asp-for="Input.Email" class="form-control" placeholder="Введите Email" />
-                            <span asp-validation-for="Input.Email" class="text-danger"></span>
-                        </div>
-
-                        <div class="form-group">
-                            <label asp-for="Input.FirstName"></label>
-                            <input asp-for="Input.FirstName" class="form-control" placeholder="Имя" />
-                            <span asp-validation-for="Input.FirstName" class="text-danger"></span>
-                        </div>
-
-                        <div class="form-group">
-                            <label asp-for="Input.LastName"></label>
-                            <input asp-for="Input.LastName" class="form-control" placeholder="Фамилия" />
-                            <span asp-validation-for="Input.LastName" class="text-danger"></span>
-                        </div>
-
-                        <div class="form-group">
-                            <label asp-for="Input.MiddleName"></label>
-                            <input asp-for="Input.MiddleName" class="form-control" placeholder="Отчество" />
-                            <span asp-validation-for="Input.MiddleName" class="text-danger"></span>
-                        </div>
-
-                        <div class="form-group">
-                            <label asp-for="Input.Password"></label>
-                            <input asp-for="Input.Password" class="form-control" placeholder="Пароль" />
-                            <span asp-validation-for="Input.Password" class="text-danger"></span>
-                        </div>
-
-                        <div class="form-group">
-                            <label asp-for="Input.ConfirmPassword"></label>
-                            <input asp-for="Input.ConfirmPassword" class="form-control" placeholder="Подтвердите пароль" />
-                            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary btn-block">Зарегистрироваться</button>
-                    </form>
-                </div>
-                <div class="card-footer text-center">
-                    <small>Уже зарегистрированы? <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl">Войти</a></small>
-                </div>
+<div class="row">
+    <div class="col-md-4">
+        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+            <h2>Создайте новую учетную запись.</h2>
+            <hr />
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                <label asp-for="Input.Email">Электронная почта</label>
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>
-        </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.FirstName" class="form-control" aria-required="true" placeholder="Иван" />
+                <label asp-for="Input.FirstName">Имя</label>
+                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.LastName" class="form-control" aria-required="true" placeholder="Иванов" />
+                <label asp-for="Input.LastName">Фамилия</label>
+                <span asp-validation-for="Input.LastName" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.MiddleName" class="form-control" aria-required="true" placeholder="Иванович" />
+                <label asp-for="Input.MiddleName">Отчество</label>
+                <span asp-validation-for="Input.MiddleName" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="пароль" />
+                <label asp-for="Input.Password">Пароль</label>
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="подтвердите пароль" />
+                <label asp-for="Input.ConfirmPassword">Подтвердите пароль</label>
+                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+            </div>
+            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Зарегистрироваться</button>
+        </form>
     </div>
 </div>
 

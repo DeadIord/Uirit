@@ -1,6 +1,45 @@
-﻿@{
-    ViewData["Title"] = "Privacy Policy";
+﻿@model WebSystemOne.ViewModel.FeedbackViewModel
+@{
+    ViewData["Title"] = "Отзыв о работе регионального ресурса";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<div class="container mt-5">
+    <h1 class="text-center mb-4">@ViewData["Title"]</h1>
+    <form id="feedbackForm" asp-action="Privacy" method="post">
+        <div class="mb-3">
+            <label for="LastName" class="form-label">Фамилия</label>
+            <input asp-for="LastName" class="form-control" placeholder="Введите фамилию" required />
+            <span asp-validation-for="LastName" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label for="FirstName" class="form-label">Имя</label>
+            <input asp-for="FirstName" class="form-control" placeholder="Введите имя" required />
+            <span asp-validation-for="FirstName" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label for="MiddleName" class="form-label">Отчество</label>
+            <input asp-for="MiddleName" class="form-control" placeholder="Введите отчество" required />
+            <span asp-validation-for="MiddleName" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label for="Body" class="form-label">Отзыв</label>
+            <textarea asp-for="Body" class="form-control" rows="5" placeholder="Напишите ваш отзыв" required></textarea>
+            <span asp-validation-for="Body" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Отправить</button>
+    </form>
+</div>
+
+@if (TempData["FeedbackStatus"] != null)
+{
+    <div class="position-fixed" style="top:20px; right:20px; z-index:1080;">
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["FeedbackStatus"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Закрыть"></button>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

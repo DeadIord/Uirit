@@ -4,6 +4,7 @@ using SendService.Core.Commands;
 using Microsoft.EntityFrameworkCore;
 using WebSystemOne.Data;
 using WebSystemOne.Models;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,16 +15,6 @@ builder.Services.AddDefaultIdentity<ApplicationUserModel>(options =>
     options.SignIn.RequireConfirmedAccount = false)
     .AddEntityFrameworkStores<ApplicationDb>();
 
-builder.Services.AddControllersWithViews();
-builder.Services.AddRazorPages();
-
-var app = builder.Build();
-
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
-}
 builder.Services.AddMassTransit(x =>
 {
     x.AddRequestClient<FeedBackResponse>();
@@ -36,7 +27,7 @@ builder.Services.AddMassTransit(x =>
 
         int portValue = rabbitMqConfig.GetValue<int>("Port");
 
-        // Преобразование в ushort
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ ushort
         ushort port = Convert.ToUInt16(portValue);
 
         cfg.Host(rabbitMqConfig.GetValue<string>("Hostname"), port, "/", h =>

@@ -1,12 +1,7 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-#nullable disable
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
@@ -50,12 +45,12 @@ namespace WebSystemOne.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required]
-            [EmailAddress]
+            [Required(ErrorMessage = "Поле \"Электронная почта\" обязательно для заполнения.")]
+            [EmailAddress(ErrorMessage = "Некорректный формат электронной почты.")]
             [Display(Name = "Электронная почта")]
             public string Email { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "Поле \"Пароль\" обязательно для заполнения.")]
             [StringLength(100, ErrorMessage = "Пароль должен содержать не менее {2} и не более {1} символов.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Пароль")]
@@ -66,15 +61,21 @@ namespace WebSystemOne.Areas.Identity.Pages.Account
             [Compare("Password", ErrorMessage = "Пароль и его подтверждение не совпадают.")]
             public string ConfirmPassword { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "Поле \"Имя\" обязательно для заполнения.")]
+            [StringLength(50, ErrorMessage = "Имя должно содержать от {2} до {1} символов.", MinimumLength = 2)]
+            [RegularExpression(@"^[A-Za-zА-Яа-яЁё\s\-]+$", ErrorMessage = "Имя может содержать только буквы, пробелы и дефисы.")]
             [Display(Name = "Имя")]
             public string FirstName { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "Поле \"Фамилия\" обязательно для заполнения.")]
+            [StringLength(50, ErrorMessage = "Фамилия должна содержать от {2} до {1} символов.", MinimumLength = 2)]
+            [RegularExpression(@"^[A-Za-zА-Яа-яЁё\s\-]+$", ErrorMessage = "Фамилия может содержать только буквы, пробелы и дефисы.")]
             [Display(Name = "Фамилия")]
             public string LastName { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "Поле \"Отчество\" обязательно для заполнения.")]
+            [StringLength(50, ErrorMessage = "Отчество должно содержать от {2} до {1} символов.", MinimumLength = 2)]
+            [RegularExpression(@"^[A-Za-zА-Яа-яЁё\s\-]+$", ErrorMessage = "Отчество может содержать только буквы, пробелы и дефисы.")]
             [Display(Name = "Отчество")]
             public string MiddleName { get; set; }
         }
@@ -95,7 +96,11 @@ namespace WebSystemOne.Areas.Identity.Pages.Account
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-                // Если требуется, можно установить EmailConfirmed = true сразу
+
+                user.FirstName = Input.FirstName;
+                user.LastName = Input.LastName;
+                user.MiddleName = Input.MiddleName;
+
                 user.EmailConfirmed = true;
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
@@ -103,7 +108,6 @@ namespace WebSystemOne.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("Пользователь создал новую учетную запись с паролем.");
 
-                    // Авторизуем пользователя сразу после регистрации
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return LocalRedirect(returnUrl);
                 }
@@ -113,9 +117,9 @@ namespace WebSystemOne.Areas.Identity.Pages.Account
                 }
             }
 
-            // Если произошла ошибка, отобразим форму заново
             return Page();
         }
+
 
         private ApplicationUserModel CreateUser()
         {
