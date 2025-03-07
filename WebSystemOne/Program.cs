@@ -17,13 +17,6 @@ builder.Services.AddDefaultIdentity<ApplicationUserModel>(options =>
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
-var app = builder.Build();
-
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
-}
 builder.Services.AddMassTransit(x =>
 {
     x.AddRequestClient<FeedBackResponse>();
@@ -46,6 +39,13 @@ builder.Services.AddMassTransit(x =>
         });
     });
 });
+var app = builder.Build();
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
 
 
 app.UseHttpsRedirection();

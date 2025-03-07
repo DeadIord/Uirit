@@ -10,24 +10,15 @@ namespace WebSystemOne.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly IRequestClient<FeedBackRequest> _FeedBackRequestClient ;
 
-        public HomeController(ILogger<HomeController> logger, IRequestClient<FeedBackRequest> feedBackRequest)
+        public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
         }
 
         public async Task<IActionResult> IndexAsync()
         {
-            string text = "";
-            var feedBackRequest = new FeedBackRequest { Text = text };
-            _logger.LogInformation("Отправка запроса отзыва: {Text}", feedBackRequest.Text);
-
-            var response = await _FeedBackRequestClient.GetResponse<FeedBackResponse>(feedBackRequest);
-
-            _logger.LogInformation("Получен ответ на запроса отзыва");
-
-            var test = response.Message.Data;
+           
             return View();
         }
 
