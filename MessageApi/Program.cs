@@ -1,3 +1,6 @@
+using MassTransit;
+using MessageApi.Rabbit;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -16,6 +19,35 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+builder.Services.AddMassTransit(config =>
+{
+    config.AddConsumer<FeedBackHandler>();
+
+    config.UsingRabbitMq((context, cfg) =>
+    {
+        var rabbitMqConfig = builder.Configuration.GetSection("RabbitMQ");
+
+        cfg.ReceiveEndpoint("GettingDocumentConsumerQueue", x =>
+        {
+            x.ConfigureConsumer<GettingDocumentHandler>(context);
+            x.ConfigureConsumeTopology = false;
+            x.Bind("GettingDocumentConsumerQueue");
+        });
+        cfg.ReceiveEndpoint("FeedBackConsumerQueue", x =>
+        {
+            x.ConfigureConsumer<FeedBackHandler>(context);
+            x.ConfigureConsumeTopology = false;
+            x.Bind("FeedBackConsumerQueue");
+        });
+
+        cfg.Host(rabbitMqConfig.GetValue<string>("Hostname"), rabbitMqConfig.GetValue<ushort>("Port"), "/", h =>
+        {
+            h.Username(rabbitMqConfig.GetValue<string>("Username"));
+            h.Password(rabbitMqConfig.GetValue<string>("Password"));
+        });
+    });
+
+});
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
