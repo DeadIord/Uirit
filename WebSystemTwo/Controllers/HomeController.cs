@@ -1,4 +1,6 @@
+using MassTransit;
 using Microsoft.AspNetCore.Mvc;
+using SendService.Core.Commands;
 using System.Diagnostics;
 using WebSystemTwo.Models;
 
@@ -7,14 +9,24 @@ namespace WebSystemTwo.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IRequestClient<GettingDocumentRequset> _GettingDocumentRequestClient;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IRequestClient<GettingDocumentRequset> gettingDocumentRequest)
         {
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> IndexAsync()
         {
+            string text = "";
+            var gettingDocumentRequest = new GettingDocumentRequset { Text = text };
+            _logger.LogInformation("Отправка запроса отзыва: {Text}", gettingDocumentRequest.Text);
+
+            var response = await _GettingDocumentRequestClient.GetResponse<GettingDocumentResponse>(gettingDocumentRequest);
+
+            _logger.LogInformation("Получен ответ на запроса отзыва");
+
+            var test = response.Message.Data;
             return View();
         }
 

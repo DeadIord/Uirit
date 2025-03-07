@@ -1,3 +1,6 @@
+using MassTransit;
+using SendService.Core.Commands;
+
 using Microsoft.EntityFrameworkCore;
 using WebSystemOne.Data;
 using WebSystemOne.Models;
@@ -21,6 +24,29 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+builder.Services.AddMassTransit(x =>
+{
+    x.AddRequestClient<FeedBackResponse>();
+
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        var rabbitMqConfig = builder.Configuration.GetSection("RabbitMQ");
+
+        cfg.Message<FeedBackRequest>(x => x.SetEntityName("FeedBackConsumerQueue"));
+
+        int portValue = rabbitMqConfig.GetValue<int>("Port");
+
+        // Преобразование в ushort
+        ushort port = Convert.ToUInt16(portValue);
+
+        cfg.Host(rabbitMqConfig.GetValue<string>("Hostname"), port, "/", h =>
+        {
+            h.Username(rabbitMqConfig.GetValue<string>("Username"));
+            h.Password(rabbitMqConfig.GetValue<string>("Password"));
+        });
+    });
+});
+
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
