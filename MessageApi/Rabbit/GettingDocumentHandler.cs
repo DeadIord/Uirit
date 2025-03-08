@@ -16,7 +16,7 @@ namespace MessageApi.Rabbit
             var searchResult = await PerformSearch(searchRequest.Text);
 
 
-            var searchResponse = new FeedBackResponse { Data = searchResult };
+            var searchResponse = new GettingDocumentResponse { Data = searchResult };
 
             await context.RespondAsync(searchResponse);
         }

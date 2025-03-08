@@ -23,5 +23,17 @@ services:
       - "15672:15672" # Админка RabbitMQ
       - "5672:5672"   # Основной AMQP-порт
 
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: my-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com  # Логин
+      PGADMIN_DEFAULT_PASSWORD: admin        # Пароль
+    ports:
+      - "5050:80"  # pgAdmin будет доступен на localhost:5050
+    depends_on:
+      - postgres
+
 volumes:
   pg_data:
