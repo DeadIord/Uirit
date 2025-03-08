@@ -24,7 +24,7 @@ namespace SendService.Core.Commands
 
     public class ServiceInfo
     {
-        public DateTime RegDate { get; set; }
+        public DateTime RegDate { get; set; } = DateTime.UtcNow;
         public int ServiceType { get; set; }
     }
 

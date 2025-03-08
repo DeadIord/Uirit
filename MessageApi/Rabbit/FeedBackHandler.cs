@@ -41,12 +41,12 @@ namespace MessageApi.Rabbit
                 var newApplication = new ApplicationModel
                 {
                     ServiceNumber = request.Service.ServiceType,
-                    Created = request.Service.RegDate,
+                    Created = request.Service.RegDate.ToUniversalTime(),
                     Body = request.Properties.Text,
                     StatusId = 2 
                 };
 
-                _context.Application.Add(newApplication);
+                _context.Aplication.Add(newApplication);
                 await _context.SaveChangesAsync();
 
                 _logger.LogInformation("Заявка сохранена в БД с ID {Id}", newApplication.Id);

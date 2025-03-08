@@ -10,7 +10,7 @@ namespace MessageApi.Data
         {
         }
 
-        public DbSet<ApplicationModel> Application { get; set; }
+        public DbSet<ApplicationModel> Aplication { get; set; }
         public DbSet<StatusModel> Status { get; set; }
     }
 }
