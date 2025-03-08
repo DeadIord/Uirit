@@ -1,34 +1,47 @@
-﻿using MassTransit;
+﻿// MessageApi.Rabbit/FeedBackHandler.cs
+using MassTransit;
 using SendService.Core.Commands;
+using System;
+using System.Threading.Tasks;
 
 namespace MessageApi.Rabbit
 {
-    public class FeedBackHandler(ILogger<FeedBackHandler> logger) : IConsumer<FeedBackRequest>
+    public class FeedBackHandler : IConsumer<FeedBackRequest>
     {
-        private readonly ILogger<FeedBackHandler> _logger = logger;
+        private readonly ILogger<FeedBackHandler> _logger;
+
+        public FeedBackHandler(ILogger<FeedBackHandler> logger)
+        {
+            _logger = logger;
+        }
 
         public async Task Consume(ConsumeContext<FeedBackRequest> context)
         {
-            var searchRequest = context.Message;
+            var feedbackRequest = context.Message;
 
-            _logger.LogInformation("Получен запрос на поиск: {Text}", searchRequest.Text);
+            _logger.LogInformation("Получен запрос отзыва от: {LastName} {FirstName}",
+                feedbackRequest.Contacts.PrivatePerson[0].LastName,
+                feedbackRequest.Contacts.PrivatePerson[0].FirstName);
 
-            var searchResult = await PerformSearch(searchRequest.Text);
+            // Process the feedback request
+            var responseData = await ProcessFeedback(feedbackRequest);
 
-
-            var searchResponse = new FeedBackResponse { Data = searchResult };
-
-            await context.RespondAsync(searchResponse);
+            // Return the response
+            var feedbackResponse = new FeedBackResponse { Data = responseData };
+            await context.RespondAsync(feedbackResponse);
         }
 
-        private async Task<string> PerformSearch(string searchText)
+        private async Task<string> ProcessFeedback(FeedBackRequest request)
         {
-
-
-            var results = "Отправлено";
-            return results;
+            try
+            {
+                return "Отзыв успешно обработан";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка обработки отзыва");
+                return "Ошибка обработки отзыва: " + ex.Message;
+            }
         }
-
-
     }
 }

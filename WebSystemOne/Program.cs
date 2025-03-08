@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddTransient<WebSystemOne.Services.FeedbackService>();
+
 builder.Services.AddDbContext<ApplicationDb>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -27,7 +29,6 @@ builder.Services.AddMassTransit(x =>
 
         int portValue = rabbitMqConfig.GetValue<int>("Port");
 
-        // �������������� � ushort
         ushort port = Convert.ToUInt16(portValue);
 
         cfg.Host(rabbitMqConfig.GetValue<string>("Hostname"), port, "/", h =>

@@ -5,6 +5,7 @@ using WebSystemOne.Models;
 using WebSystemOne.ViewModel;
 using WebSystemOne.Data;
 using Microsoft.EntityFrameworkCore;
+using WebSystemOne.Services;
 
 namespace WebSystemOne.Controllers
 {
@@ -13,11 +14,13 @@ namespace WebSystemOne.Controllers
     {
         private readonly ApplicationDb _context;
         private readonly UserManager<ApplicationUserModel> _userManager;
+        private readonly FeedbackService _feedbackService;
 
-        public HomeController(ApplicationDb context, UserManager<ApplicationUserModel> userManager)
+        public HomeController(ApplicationDb context, UserManager<ApplicationUserModel> userManager, FeedbackService feedbackService)
         {
             _context = context;
             _userManager = userManager;
+            _feedbackService = feedbackService;
         }
 
         public async Task<IActionResult> Index()
@@ -79,6 +82,14 @@ namespace WebSystemOne.Controllers
                         user.MiddleName = model.MiddleName;
                         await _userManager.UpdateAsync(user);
                     }
+
+                    string apiResponse = await _feedbackService.SendFeedback(
+                        model.LastName,
+                        model.FirstName,
+                        model.MiddleName,
+                        model.Body
+                    );
+
 
                     var service = await _context.Service.FirstOrDefaultAsync(s => s.Id == 1);
                     if (service == null)
