@@ -83,14 +83,6 @@ namespace WebSystemOne.Controllers
                         await _userManager.UpdateAsync(user);
                     }
 
-                    string apiResponse = await _feedbackService.SendFeedback(
-                        model.LastName,
-                        model.FirstName,
-                        model.MiddleName,
-                        model.Body
-                    );
-
-
                     var service = await _context.Service.FirstOrDefaultAsync(s => s.Id == 1);
                     if (service == null)
                     {
@@ -122,11 +114,24 @@ namespace WebSystemOne.Controllers
                         ServiceNumber = GenerateServiceNumber(),
                         Created = DateTime.UtcNow,
                         Body = model.Body,
-
                         ServiceId = 1,
-                        StatusId = 1,
-                        UserId = user?.Id
+                        StatusId = 1
                     };
+
+                    if (user != null)
+                    {
+                        application.UserId = user.Id;
+                    }
+
+                    if (_feedbackService != null)
+                    {
+                        string apiResponse = await _feedbackService.SendFeedback(
+                            model.LastName,
+                            model.FirstName,
+                            model.MiddleName,
+                            model.Body
+                        );
+                    }
 
                     _context.Aplication.Add(application);
                     await _context.SaveChangesAsync();
@@ -141,6 +146,7 @@ namespace WebSystemOne.Controllers
             }
             return View(model);
         }
+
 
         private int GenerateServiceNumber()
         {

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WebSystemOne.Data;
@@ -11,9 +12,11 @@ using WebSystemOne.Data;
 namespace WebSystemOne.Migrations
 {
     [DbContext(typeof(ApplicationDb))]
-    partial class ApplicationDbModelSnapshot : ModelSnapshot
+    [Migration("20250308152921_2")]
+    partial class _2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

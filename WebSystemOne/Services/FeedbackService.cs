@@ -17,16 +17,22 @@ namespace WebSystemOne.Services
             _feedBackRequestClient = feedBackRequestClient;
         }
 
-        public async Task<string> SendFeedback(string lastName, string firstName, string middleName, string body)
+        public virtual async Task<string> SendFeedback(string lastName, string firstName, string middleName, string body)
         {
             try
             {
+                if (_feedBackRequestClient == null)
+                {
+                    _logger.LogWarning("MassTransit client is not configured. Feedback is only saved locally.");
+                    return "Отзыв сохранен локально, но не отправлен через API.";
+                }
+
                 var feedBackRequest = new FeedBackRequest
                 {
                     Service = new ServiceInfo
                     {
                         RegDate = DateTime.Now,
-                        ServiceType = "113"
+                        ServiceType = 113
                     },
                     Contacts = new ContactsInfo
                     {
@@ -56,7 +62,7 @@ namespace WebSystemOne.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Ошибка при отправке отзыва");
-                throw;
+                return "Произошла ошибка при отправке отзыва через API, но отзыв сохранен локально.";
             }
         }
     }

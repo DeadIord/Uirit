@@ -28,7 +28,7 @@ namespace SendService.Core.Commands
     public class ServiceInfo
     {
         public DateTime RegDate { get; set; }
-        public string ServiceType { get; set; }
+        public int ServiceType { get; set; }
     }
 
     public class ContactsInfo
