@@ -5,6 +5,12 @@
 
 <div class="container mt-5">
     <h1 class="text-center mb-4">@ViewData["Title"]</h1>
+
+    <div id="feedback-alert" class="alert alert-success alert-dismissible fade d-none" role="alert">
+        Отзыв успешно отправлен.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Закрыть"></button>
+    </div>
+
     <form id="feedbackForm" asp-action="Privacy" method="post">
         <div class="mb-3">
             <label for="LastName" class="form-label">Фамилия</label>
@@ -26,20 +32,24 @@
             <textarea asp-for="Body" class="form-control" rows="5" placeholder="Напишите ваш отзыв" required></textarea>
             <span asp-validation-for="Body" class="text-danger"></span>
         </div>
-        <button type="submit" class="btn btn-primary">Отправить</button>
+        <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-primary">Отправить</button>
+            <a href="@Url.Action("Index", "Home")" class="btn btn-outline-secondary">Вернуться к списку</a>
+        </div>
     </form>
 </div>
 
-@if (TempData["FeedbackStatus"] != null)
-{
-    <div class="position-fixed" style="top:20px; right:20px; z-index:1080;">
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            @TempData["FeedbackStatus"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Закрыть"></button>
-        </div>
-    </div>
-}
-
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        $(document).ready(function() {
+            $('#feedbackForm').on('submit', function(e) {
+                if (!this.checkValidity()) {
+                    e.preventDefault();
+                    return;
+                }
+            });
+        });
+    </script>
 }
