@@ -19,16 +19,13 @@ namespace SendService.Core.Commands
             Properties = new PropertiesInfo();
         }
     }
-    public class FeedBackResponse
-    {
-        public string Data { get; set; }
-    }
+
 
 
     public class ServiceInfo
     {
         public DateTime RegDate { get; set; }
-        public string ServiceType { get; set; }
+        public int ServiceType { get; set; }
     }
 
     public class ContactsInfo
@@ -59,5 +56,8 @@ namespace SendService.Core.Commands
         public string Message { get; set; }
         public object Data { get; set; }
     }
-
+    public class FeedBackResponse
+    {
+        public int Data { get; set; }
+    }
 }

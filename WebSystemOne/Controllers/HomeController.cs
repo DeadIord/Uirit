@@ -69,78 +69,63 @@ namespace WebSystemOne.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Privacy(FeedbackViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return View(model);
+
+            try
             {
-                try
+                var user = await _userManager.GetUserAsync(User);
+
+                if (user != null)
                 {
-                    var user = await _userManager.GetUserAsync(User);
-
-                    if (user != null)
-                    {
-                        user.LastName = model.LastName;
-                        user.FirstName = model.FirstName;
-                        user.MiddleName = model.MiddleName;
-                        await _userManager.UpdateAsync(user);
-                    }
-
-                    string apiResponse = await _feedbackService.SendFeedback(
-                        model.LastName,
-                        model.FirstName,
-                        model.MiddleName,
-                        model.Body
-                    );
-
-
-                    var service = await _context.Service.FirstOrDefaultAsync(s => s.Id == 1);
-                    if (service == null)
-                    {
-                        service = new ServiceModel
-                        {
-                            Id = 1,
-                            ServiceNumber = "Отзыв о работе ресурса"
-                        };
-                        _context.Service.Add(service);
-                        await _context.SaveChangesAsync();
-                    }
-
-                    var status = await _context.Status.FirstOrDefaultAsync(s => s.Id == 1);
-                    if (status == null)
-                    {
-                        status = new StatusModel
-                        {
-                            Id = 1,
-                            Code = 1010,
-                            Name = "Запрос подан",
-                            Text = "Указанные сведения будут проверены на корректность заполнения обязательных полей."
-                        };
-                        _context.Status.Add(status);
-                        await _context.SaveChangesAsync();
-                    }
-
-                    var application = new AplicationModel
-                    {
-                        ServiceNumber = GenerateServiceNumber(),
-                        Created = DateTime.UtcNow,
-                        Body = model.Body,
-
-                        ServiceId = 1,
-                        StatusId = 1,
-                        UserId = user?.Id
-                    };
-
-                    _context.Aplication.Add(application);
-                    await _context.SaveChangesAsync();
-
-                    TempData["FeedbackStatus"] = "Отзыв успешно отправлен.";
-                    return RedirectToAction("Index", "Home");
+                    user.LastName = model.LastName;
+                    user.FirstName = model.FirstName;
+                    user.MiddleName = model.MiddleName;
+                    await _userManager.UpdateAsync(user);
                 }
-                catch (Exception ex)
+
+               var apiResponse =  await _feedbackService.SendFeedback(model.LastName, model.FirstName, model.MiddleName, model.Body);
+                var status = apiResponse;
+
+                // Получаем или создаем сервис и статус
+                var service = await _context.Service.FindAsync(1) ?? await CreateServiceAsync();
+
+                var application = new AplicationModel
                 {
-                    ModelState.AddModelError(string.Empty, "Ошибка сохранения отзыва: " + ex.Message);
-                }
+                    ServiceNumber = GenerateServiceNumber(),
+                    Created = DateTime.UtcNow,
+                    Body = model.Body,
+                    ServiceId = service.Id,
+                    StatusId = status,
+                    UserId = user?.Id
+                };
+
+                _context.Aplication.Add(application);
+                await _context.SaveChangesAsync();
+
+                TempData["FeedbackStatus"] = "Отзыв успешно отправлен.";
+                return RedirectToAction("Index", "Home");
             }
-            return View(model);
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, "Ошибка сохранения отзыва: " + ex.Message);
+                return View(model);
+            }
         }
+
+        // Вспомогательные методы для создания записей в БД
+        private async Task<ServiceModel> CreateServiceAsync()
+        {
+            var service = new ServiceModel
+            {
+                Id = 1,
+                ServiceNumber = "Отзыв о работе ресурса"
+            };
+            _context.Service.Add(service);
+            await _context.SaveChangesAsync();
+            return service;
+        }
+
 
         private int GenerateServiceNumber()
         {

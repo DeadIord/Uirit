@@ -17,7 +17,7 @@ namespace WebSystemOne.Services
             _feedBackRequestClient = feedBackRequestClient;
         }
 
-        public async Task<string> SendFeedback(string lastName, string firstName, string middleName, string body)
+        public async Task<int> SendFeedback(string lastName, string firstName, string middleName, string body)
         {
             try
             {
@@ -26,7 +26,7 @@ namespace WebSystemOne.Services
                     Service = new ServiceInfo
                     {
                         RegDate = DateTime.Now,
-                        ServiceType = "113"
+                        ServiceType = 113
                     },
                     Contacts = new ContactsInfo
                     {
