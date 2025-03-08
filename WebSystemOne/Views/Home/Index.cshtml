@@ -7,13 +7,18 @@
 <div class="container">
     <h1 class="text-center mb-4">Заявления</h1>
 
-    <!-- Кнопка для перехода на страницу отзыва о работе ресурса -->
     <div class="text-center mb-4">
         <a href="/Home/Privacy" class="btn btn-primary">Отзыв о работе ресурса</a>
     </div>
 
-    <!-- Таблица со списком заявлений -->
-    <table class="table table-striped table-bordered">
+    <div class="text-end mb-2">
+        <small class="text-muted">Автообновление каждые 30 секунд</small>
+        <button id="refresh-button" class="btn btn-sm btn-outline-secondary ms-2">
+            <i class="bi bi-arrow-clockwise"></i> Обновить сейчас
+        </button>
+    </div>
+
+    <table id="applications-table" class="table table-striped table-bordered">
         <thead>
             <tr>
                 <th>Номер заявки</th>
@@ -29,16 +34,85 @@
                     <tr>
                         <td>@item.ServiceNumber</td>
                         <td>@item.Created.ToString("dd.MM.yyyy HH:mm")</td>
-                        <td>@item.Name</td>
+                        <td class="@(
+                            item.Name == "Запрос подан" ? "text-primary" :
+                            item.Name == "Запрос доставлен в ведомство" ? "text-info" :
+                            item.Name == "Запрос не доставлен" ? "text-danger" :
+                            item.Name == "Запрос зарегистрирован" ? "text-success" : "")">
+                            @item.Name
+                        </td>
                     </tr>
                 }
             }
             else
             {
-                <tr>
+                <tr id="no-data-row">
                     <td colspan="3" class="text-center">Нет заявлений.</td>
                 </tr>
             }
         </tbody>
     </table>
 </div>
+
+@section Scripts {
+    <script>
+        function updateApplicationsList() {
+            $.ajax({
+                url: '@Url.Action("GetApplications", "Home")',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    const tbody = $('#applications-table tbody');
+                    tbody.empty();
+
+                    if (data && data.length > 0) {
+                        // Добавляем строки с данными
+                        data.forEach(function (item) {
+                            // Преобразование даты
+                            const date = new Date(item.created);
+                            const formattedDate = date.toLocaleDateString('ru-RU') + ' ' +
+                                date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+
+                            let statusClass = '';
+                            if (item.name === 'Запрос подан') {
+                                statusClass = 'text-primary';
+                            } else if (item.name === 'Запрос доставлен в ведомство') {
+                                statusClass = 'text-info';
+                            } else if (item.name === 'Запрос не доставлен') {
+                                statusClass = 'text-danger';
+                            } else if (item.name === 'Запрос зарегистрирован') {
+                                statusClass = 'text-success';
+                            }
+
+                            const row = `<tr>
+                                        <td>${item.serviceNumber}</td>
+                                        <td>${formattedDate}</td>
+                                        <td class="${statusClass}">${item.name}</td>
+                                    </tr>`;
+                            tbody.append(row);
+                        });
+                    } else {
+                        tbody.append('<tr id="no-data-row"><td colspan="3" class="text-center">Нет заявлений.</td></tr>');
+                    }
+                },
+                error: function () {
+                    console.error('Ошибка при получении данных');
+                }
+            });
+        }
+
+        const updateInterval = setInterval(updateApplicationsList, 30000);
+
+        $('#refresh-button').on('click', function () {
+            updateApplicationsList();
+        });
+
+        $(window).on('unload', function () {
+            clearInterval(updateInterval);
+        });
+
+        if (@(TempData["FeedbackStatus"] != null ? "true" : "false")) {
+            setTimeout(updateApplicationsList, 1000);
+        }
+    </script>
+}
