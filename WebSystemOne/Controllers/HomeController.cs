@@ -113,7 +113,6 @@ namespace WebSystemOne.Controllers
             }
         }
 
-        // Вспомогательные методы для создания записей в БД
         private async Task<ServiceModel> CreateServiceAsync()
         {
             var service = new ServiceModel
