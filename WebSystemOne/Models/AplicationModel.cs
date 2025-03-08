@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebSystemOne.Models
 {
@@ -12,13 +13,17 @@ namespace WebSystemOne.Models
 
 
         public int ServiceId { get; set; }
+        [ForeignKey("ServiceId")]
         public ServiceModel Service { get; set; }
 
         public int StatusId { get; set; }
+        [ForeignKey("StatusId")]
         public StatusModel Status { get; set; }
 
         public string UserId { get; set; }
+        [ForeignKey("UserId")]
         public ApplicationUserModel User { get; set; }
+
 
     }
 }

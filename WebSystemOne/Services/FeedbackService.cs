@@ -56,7 +56,7 @@ namespace WebSystemOne.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Ошибка при отправке отзыва");
-                throw;
+                return "Произошла ошибка при отправке отзыва через API, но отзыв сохранен локально.";
             }
         }
     }
