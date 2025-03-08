@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: my-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydatabase
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+  rabbitmq:
+    image: masstransit/rabbitmq:latest
+    container_name: some-rabbit
+    hostname: my-rabbit
+    restart: unless-stopped
+    ports:
+      - "15672:15672" # Админка RabbitMQ
+      - "5672:5672"   # Основной AMQP-порт
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: my-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com  # Логин
+      PGADMIN_DEFAULT_PASSWORD: admin        # Пароль
+    ports:
+      - "5050:80"  # pgAdmin будет доступен на localhost:5050
+    depends_on:
+      - postgres
+
+volumes:
+  pg_data:

@@ -21,11 +21,11 @@ namespace MessageApi.Rabbit
             await context.RespondAsync(searchResponse);
         }
 
-        private async Task<List<object>> PerformSearch(string searchText)
+        private async Task<string> PerformSearch(string searchText)
         {
 
 
-            var results = new List<object>();
+            var results = "Отправлено";
             return results;
         }
 
