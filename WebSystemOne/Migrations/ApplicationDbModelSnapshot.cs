@@ -368,19 +368,19 @@ namespace WebSystemOne.Migrations
             modelBuilder.Entity("WebSystemOne.Models.AplicationModel", b =>
                 {
                     b.HasOne("WebSystemOne.Models.ServiceModel", "Service")
-                        .WithMany()
+                        .WithMany("Aplications")
                         .HasForeignKey("ServiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WebSystemOne.Models.StatusModel", "Status")
-                        .WithMany()
+                        .WithMany("Aplications")
                         .HasForeignKey("StatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WebSystemOne.Models.ApplicationUserModel", "User")
-                        .WithMany()
+                        .WithMany("Aplications")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -390,6 +390,21 @@ namespace WebSystemOne.Migrations
                     b.Navigation("Status");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("WebSystemOne.Models.ApplicationUserModel", b =>
+                {
+                    b.Navigation("Aplications");
+                });
+
+            modelBuilder.Entity("WebSystemOne.Models.ServiceModel", b =>
+                {
+                    b.Navigation("Aplications");
+                });
+
+            modelBuilder.Entity("WebSystemOne.Models.StatusModel", b =>
+                {
+                    b.Navigation("Aplications");
                 });
 #pragma warning restore 612, 618
         }

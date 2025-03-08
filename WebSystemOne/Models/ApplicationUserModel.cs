@@ -7,5 +7,6 @@ namespace WebSystemOne.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string MiddleName { get; set; }
+        public ICollection<AplicationModel> Aplications { get; set; }
     }
 }
