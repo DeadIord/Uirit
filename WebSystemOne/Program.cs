@@ -27,6 +27,9 @@ builder.Services.AddMassTransit(x =>
 
         cfg.Message<FeedBackRequest>(x => x.SetEntityName("FeedBackConsumerQueue"));
 
+        cfg.Message<GettingRecordsRequest>(x => x.SetEntityName("GettingRecordsConsumerQueue"));
+
+
         int portValue = rabbitMqConfig.GetValue<int>("Port");
 
         ushort port = Convert.ToUInt16(portValue);

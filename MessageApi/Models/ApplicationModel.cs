@@ -13,5 +13,7 @@ namespace MessageApi.Models
         public int StatusId { get; set; }
         public StatusModel Status { get; set; }
 
+        public bool Check { get; set; }
+
     }
 }
