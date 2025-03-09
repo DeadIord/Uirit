@@ -29,16 +29,16 @@
                         <td>@item.Created.ToString("dd.MM.yyyy")</td>
                         <td>@item.ServiceNumber</td>
                         <td class="text-center">
-                            <button type="button" class="btn btn-sm btn-link" onclick="toggleDetails('@item.Id')">Свернуть</button>
+                            <button type="button" class="btn btn-sm btn-link" onclick="toggleDetails('@item.Id')">Просмотр</button>
                         </td>
                         <td class="text-center">
-                            @if (item.Status.StatusName == "На рассмотрении")
+                            @if (item.Status.StatusName == "Запрос зарегистрирован")
                             {
-                                <span class="badge badge-warning">На рассмотрении</span>
+                                <span class="badge badge-success">Запрос зарегистрирован</span>
                             }
                             else
                             {
-                                <a href="@Url.Action("Review", "Home", new { id = item.ServiceNumber })" class="btn btn-warning">Рассмотреть</a>
+                                <a href="@Url.Action("Register", "Home", new { id = item.Id })" class="btn btn-warning">Рассмотреть</a>
                             }
                         </td>
                     </tr>
@@ -64,11 +64,9 @@
             event.target.textContent = 'Просмотр';
         }
     }
-
-    // Initially hide all detail rows
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         var detailsRows = document.querySelectorAll('[id^="details-"]');
-        detailsRows.forEach(function(row) {
+        detailsRows.forEach(function (row) {
             row.style.display = 'none';
         });
     });
