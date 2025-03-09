@@ -18,13 +18,13 @@ namespace WebSystemTwo.Controllers
 
         public async Task<IActionResult> IndexAsync()
         {
-            var applications = await _db.Applications.Include(a => a.Status).ToListAsync();
+            var applications = await _db.Aplication.Include(a => a.Status).ToListAsync();
             return View(applications);
         }
 
         public async Task<IActionResult> Register(long id)
         {
-            var application = await _db.Applications.Include(a => a.Status)
+            var application = await _db.Aplication.Include(a => a.Status)
                                                     .FirstOrDefaultAsync(a => a.Id == id);
             if (application == null)
             {

@@ -15,12 +15,13 @@ namespace WebSystemOne.Controllers
         private readonly ApplicationDb _context;
         private readonly UserManager<ApplicationUserModel> _userManager;
         private readonly FeedbackService _feedbackService;
-
-        public HomeController(ApplicationDb context, UserManager<ApplicationUserModel> userManager, FeedbackService feedbackService)
+        private readonly GettingRecordsService _gettingRecordsService;
+        public HomeController(ApplicationDb context, UserManager<ApplicationUserModel> userManager, FeedbackService feedbackService, GettingRecordsService gettingRecordsService)
         {
             _context = context;
             _userManager = userManager;
             _feedbackService = feedbackService;
+            _gettingRecordsService = gettingRecordsService;
         }
 
         public async Task<IActionResult> Index()
@@ -71,7 +72,7 @@ namespace WebSystemOne.Controllers
         {
             if (!ModelState.IsValid)
                 return View(model);
-
+            var serviceNumber = GenerateServiceNumber();
             try
             {
                 var user = await _userManager.GetUserAsync(User);
@@ -84,7 +85,7 @@ namespace WebSystemOne.Controllers
                     await _userManager.UpdateAsync(user);
                 }
 
-               var apiResponse =  await _feedbackService.SendFeedback(model.LastName, model.FirstName, model.MiddleName, model.Body);
+               var apiResponse =  await _feedbackService.SendFeedback(model.LastName, model.FirstName, model.MiddleName, model.Body, serviceNumber);
                 var status = apiResponse;
 
                 // ѕолучаем или создаем сервис и статус
@@ -92,7 +93,7 @@ namespace WebSystemOne.Controllers
 
                 var application = new AplicationModel
                 {
-                    ServiceNumber = GenerateServiceNumber(),
+                    ServiceNumber = serviceNumber,
                     Created = DateTime.UtcNow,
                     Body = model.Body,
                     ServiceId = service.Id,
@@ -134,6 +135,8 @@ namespace WebSystemOne.Controllers
         [HttpGet]
         public async Task<IActionResult> GetApplications()
         {
+            await _gettingRecordsService.GettingRecords();
+
             var user = await _userManager.GetUserAsync(User);
 
             if (user == null)

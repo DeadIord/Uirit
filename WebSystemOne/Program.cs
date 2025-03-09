@@ -5,11 +5,12 @@ using Microsoft.EntityFrameworkCore;
 using WebSystemOne.Data;
 using WebSystemOne.Models;
 using Microsoft.AspNetCore.Identity;
+using WebSystemOne.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddTransient<WebSystemOne.Services.FeedbackService>();
-
+builder.Services.AddTransient<FeedbackService>();
+builder.Services.AddTransient<GettingRecordsService>();
 builder.Services.AddDbContext<ApplicationDb>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 

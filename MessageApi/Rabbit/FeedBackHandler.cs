@@ -40,9 +40,10 @@ namespace MessageApi.Rabbit
             {
                 var newApplication = new ApplicationModel
                 {
-                    ServiceNumber = request.Service.ServiceType,
+                    ServiceNumber = request.Service.ServiceNumber,
                     Created = request.Service.RegDate.ToUniversalTime(),
                     Body = request.Properties.Text,
+                    Check = false,
                     StatusId = 2 
                 };
 

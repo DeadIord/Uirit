@@ -13,7 +13,7 @@ namespace WebSystemTwo.Data
         {
         }
 
-        public DbSet<ApplicationModel> Applications { get; set; }
+        public DbSet<ApplicationModel> Aplication { get; set; }
 
         public DbSet<StatusModel> Statuses { get; set; }
 

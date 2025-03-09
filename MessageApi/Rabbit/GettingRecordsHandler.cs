@@ -1,35 +1,54 @@
 ﻿using MassTransit;
+using MessageApi.Data;
+using Microsoft.EntityFrameworkCore;
 using SendService.Core.Commands;
 
 namespace MessageApi.Rabbit
 {
 
-    public class GettingRecordsHandler(ILogger<GettingRecordsHandler> logger) : IConsumer<GettingRecordsRequest>
+    public class GettingRecordsHandler : IConsumer<GettingRecordsRequest>
     {
-        private readonly ILogger<GettingRecordsHandler> _logger = logger;
+        private readonly ILogger<GettingRecordsHandler> _logger;
+        private readonly ApplicationDbContext _dbContext;
+
+        public GettingRecordsHandler(ILogger<GettingRecordsHandler> logger, ApplicationDbContext dbContext)
+        {
+            _logger = logger;
+            _dbContext = dbContext;
+        }
 
         public async Task Consume(ConsumeContext<GettingRecordsRequest> context)
         {
-            var searchRequest = context.Message;
+            _logger.LogInformation("Получен запрос на получение записей");
 
-            _logger.LogInformation("Получен запрос на поиск: ", searchRequest);
+            var records = await _dbContext.Aplication
+                .Where(a => a.StatusId == 4 && !a.Check)
+                .ToListAsync();
 
-            var searchResult = await PerformSearch();
+            _logger.LogInformation($"Найдено {records.Count} записей");
 
+            foreach (var record in records)
+            {
+                record.Check = true;
+            }
 
-            var searchResponse = new GettingDocumentResponse { Data = searchResult };
+            await _dbContext.SaveChangesAsync();
 
-            await context.RespondAsync(searchResponse);
+            var response = new GettingRecordsResponse
+            {
+                Data = records.Select(a => new ApplicationDto
+                {
+                    Id = a.Id,
+                    ServiceNumber = a.ServiceNumber,
+                    Created = a.Created,
+                    Body = a.Body,
+                    StatusId = a.StatusId,
+                    Check = a.Check
+                }).ToList()
+            };
+
+            await context.RespondAsync(response);
         }
-
-        private async Task<List<object>> PerformSearch()
-        {
-
-
-            var results = new List<object>();
-            return results;
-        }
-
-
     }
+
 }
