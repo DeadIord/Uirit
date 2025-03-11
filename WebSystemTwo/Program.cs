@@ -1,6 +1,7 @@
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using SendService.Core.Commands;
+using WebSystemOne.Controllers;
 using WebSystemTwo.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,9 +11,12 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddScoped<testService>();
+
 builder.Services.AddMassTransit(x =>
 {
-    x.AddRequestClient<GettingDocumentResponse>();
+    // Регистрация клиента запросов с указанием корректного типа
+    x.AddRequestClient<GettingDocumentRequset>();
 
     x.UsingRabbitMq((context, cfg) =>
     {
@@ -21,8 +25,6 @@ builder.Services.AddMassTransit(x =>
         cfg.Message<GettingDocumentRequset>(x => x.SetEntityName("GettingDocumentConsumerQueue"));
 
         int portValue = rabbitMqConfig.GetValue<int>("Port");
-
-        // Преобразование в ushort
         ushort port = Convert.ToUInt16(portValue);
 
         cfg.Host(rabbitMqConfig.GetValue<string>("Hostname"), port, "/", h =>
@@ -32,20 +34,34 @@ builder.Services.AddMassTransit(x =>
         });
     });
 });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<ApplicationDbContext>();
+        StatusSeedData.Initialize(context);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Ошибка при инициализации базы данных.");
+    }
+}
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
-
 app.UseAuthorization();
 
 app.MapControllerRoute(

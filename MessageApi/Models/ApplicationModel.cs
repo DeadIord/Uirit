@@ -14,6 +14,7 @@ namespace MessageApi.Models
         public StatusModel Status { get; set; }
 
         public bool Check { get; set; }
+        public string FIO {  get; set; }
 
     }
 }

@@ -26,6 +26,8 @@ namespace WebSystemTwo.Models
 
         [ForeignKey("StatusId")]
         public StatusModel Status { get; set; }
+
+        public string FIO { get; set; }
     }
 
 }

@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace SendService.Core.Commands
 {
     public class GettingDocumentRequset
     {
-        public string? Text { get; set; }
     }
+   [XmlRoot("Document")]
     public class GettingDocumentResponse
     {
-        public List<object> Data { get; set; }
+        [XmlElement("Data")]
+        public string Data { get; set; }
     }
+
 }

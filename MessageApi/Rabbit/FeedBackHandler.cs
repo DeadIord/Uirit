@@ -38,20 +38,22 @@ namespace MessageApi.Rabbit
         {
             try
             {
+                var fio = request.Contacts.PrivatePerson.FirstOrDefault();
                 var newApplication = new ApplicationModel
                 {
                     ServiceNumber = request.Service.ServiceNumber,
                     Created = request.Service.RegDate.ToUniversalTime(),
                     Body = request.Properties.Text,
                     Check = false,
-                    StatusId = 2 
+                    StatusId = 1,
+                    FIO = $"{fio.LastName} {fio.FirstName} {fio.MiddleName}"
                 };
 
                 _context.Aplication.Add(newApplication);
                 await _context.SaveChangesAsync();
 
                 _logger.LogInformation("Заявка сохранена в БД с ID {Id}", newApplication.Id);
-                return 2;
+                return 1;
             }
             catch (Exception ex)
             {

@@ -35,7 +35,7 @@ namespace SendService.Core.Commands
 
         public ContactsInfo()
         {
-            PrivatePerson = new PrivatePersonInfo[1] { new PrivatePersonInfo() };
+            PrivatePerson = [new PrivatePersonInfo()];
         }
     }
 

@@ -40,7 +40,7 @@ builder.Services.AddMassTransit(config =>
             x.ConfigureConsumeTopology = false;
             x.Bind("GettingRecordsConsumerQueue");
         });
-
+     
         cfg.Host(rabbitMqConfig.GetValue<string>("Hostname"), rabbitMqConfig.GetValue<ushort>("Port"), "/", h =>
         {
             h.Username(rabbitMqConfig.GetValue<string>("Username"));
