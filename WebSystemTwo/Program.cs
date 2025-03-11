@@ -17,12 +17,13 @@ builder.Services.AddMassTransit(x =>
 {
     // Регистрация клиента запросов с указанием корректного типа
     x.AddRequestClient<GettingDocumentRequset>();
-
+    x.AddRequestClient<UpdateStatusRequset>();
     x.UsingRabbitMq((context, cfg) =>
     {
         var rabbitMqConfig = builder.Configuration.GetSection("RabbitMQ");
 
         cfg.Message<GettingDocumentRequset>(x => x.SetEntityName("GettingDocumentConsumerQueue"));
+        cfg.Message<UpdateStatusRequset>(x => x.SetEntityName("UpdateStatusConsumerQueue"));
 
         int portValue = rabbitMqConfig.GetValue<int>("Port");
         ushort port = Convert.ToUInt16(portValue);

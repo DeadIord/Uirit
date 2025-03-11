@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace WebSystemTwo.Migrations
 {
     /// <inheritdoc />
-    public partial class Create : Migration
+    public partial class create : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -33,11 +33,12 @@ namespace WebSystemTwo.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ServiceNumber = table.Column<string>(type: "text", nullable: false),
+                    ServiceNumber = table.Column<int>(type: "integer", nullable: false),
                     Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Body = table.Column<string>(type: "text", nullable: false),
                     User = table.Column<string>(type: "text", nullable: false),
-                    StatusId = table.Column<long>(type: "bigint", nullable: false)
+                    StatusId = table.Column<long>(type: "bigint", nullable: false),
+                    FIO = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -49,11 +50,6 @@ namespace WebSystemTwo.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.InsertData(
-                table: "Statuses",
-                columns: new[] { "Id", "StatusCode", "StatusName", "Text" },
-                values: new object[] { 4L, 1050, "Запрос зарегистрирован", "Присвоен регистрационный № {0} от {1}. Запрос принят к рассмотрению." });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Aplication_StatusId",

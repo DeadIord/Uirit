@@ -18,6 +18,9 @@ builder.Services.AddMassTransit(config =>
     config.AddConsumer<FeedBackHandler>();
     config.AddConsumer<GettingDocumentHandler>();
     config.AddConsumer<GettingRecordsHandler>();
+
+    config.AddConsumer<UpdateStatusHandler>();
+
     config.UsingRabbitMq((context, cfg) =>
     {
         var rabbitMqConfig = builder.Configuration.GetSection("RabbitMQ");
@@ -36,11 +39,18 @@ builder.Services.AddMassTransit(config =>
         });
         cfg.ReceiveEndpoint("GettingRecordsConsumerQueue", x =>
         {
-            x.ConfigureConsumer<GettingRecordsHandler>(context);
+            x.ConfigureConsumer<UpdateStatusHandler>(context);
             x.ConfigureConsumeTopology = false;
             x.Bind("GettingRecordsConsumerQueue");
         });
-     
+        cfg.ReceiveEndpoint("UpdateStatusConsumerQueue", x =>
+        {
+            x.ConfigureConsumer<GettingRecordsHandler>(context);
+            x.ConfigureConsumeTopology = false;
+            x.Bind("UpdateStatusConsumerQueue");
+        });
+
+
         cfg.Host(rabbitMqConfig.GetValue<string>("Hostname"), rabbitMqConfig.GetValue<ushort>("Port"), "/", h =>
         {
             h.Username(rabbitMqConfig.GetValue<string>("Username"));

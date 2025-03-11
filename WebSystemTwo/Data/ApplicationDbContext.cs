@@ -23,15 +23,6 @@ namespace WebSystemTwo.Data
                 .WithMany()
                 .HasForeignKey(a => a.StatusId);
 
-            modelBuilder.Entity<StatusModel>().HasData(
-                new StatusModel
-                {
-                    Id = 4,
-                    StatusCode = 1050,
-                    StatusName = "Запрос зарегистрирован",
-                    Text = "Присвоен регистрационный № {0} от {1}. Запрос принят к рассмотрению."
-                }
-            );
         }
     }
 }

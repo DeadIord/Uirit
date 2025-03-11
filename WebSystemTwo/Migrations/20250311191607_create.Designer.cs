@@ -12,8 +12,8 @@ using WebSystemTwo.Data;
 namespace WebSystemTwo.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250311174725_addedFIOColums")]
-    partial class addedFIOColums
+    [Migration("20250311191607_create")]
+    partial class create
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -44,9 +44,8 @@ namespace WebSystemTwo.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("ServiceNumber")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("ServiceNumber")
+                        .HasColumnType("integer");
 
                     b.Property<long>("StatusId")
                         .HasColumnType("bigint");
@@ -85,15 +84,6 @@ namespace WebSystemTwo.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Statuses");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 4L,
-                            StatusCode = 1050,
-                            StatusName = "Запрос зарегистрирован",
-                            Text = "Присвоен регистрационный № {0} от {1}. Запрос принят к рассмотрению."
-                        });
                 });
 
             modelBuilder.Entity("WebSystemTwo.Models.ApplicationModel", b =>

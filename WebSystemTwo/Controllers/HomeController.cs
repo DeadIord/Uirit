@@ -20,7 +20,6 @@ namespace WebSystemTwo.Controllers
 
         public async Task<IActionResult> IndexAsync()
         {
-      await    _testService.ProcessDocumentsAsync();
 
             var applications = await _db.Aplication.Include(a => a.Status).ToListAsync();
             return View(applications);
@@ -36,13 +35,31 @@ namespace WebSystemTwo.Controllers
             }
 
             application.StatusId = 4;
-            application.ServiceNumber = string.Format("Присвоен регистрационный № {0} от {1}",
-            application.Id,
-            DateTime.Now.ToString("dd.MM.yyyy"));
-
             await _db.SaveChangesAsync();
 
+            await _testService.UpdateStatusAsync(application.ServiceNumber);
+
             return RedirectToAction(nameof(IndexAsync));
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetApplications()
+        {
+            await _testService.ProcessDocumentsAsync();
+
+            var applications = await _db.Aplication
+         .Include(a => a.Status)
+         .Select(a => new
+         {
+             a.Id,
+             a.FIO,
+             a.Created,
+             a.ServiceNumber,
+             a.Status.StatusName,
+             a.Body
+         })
+         .ToListAsync();
+
+            return Json(applications);
         }
     }
 }

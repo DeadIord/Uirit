@@ -41,9 +41,8 @@ namespace WebSystemTwo.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("ServiceNumber")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("ServiceNumber")
+                        .HasColumnType("integer");
 
                     b.Property<long>("StatusId")
                         .HasColumnType("bigint");
@@ -82,15 +81,6 @@ namespace WebSystemTwo.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Statuses");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 4L,
-                            StatusCode = 1050,
-                            StatusName = "Запрос зарегистрирован",
-                            Text = "Присвоен регистрационный № {0} от {1}. Запрос принят к рассмотрению."
-                        });
                 });
 
             modelBuilder.Entity("WebSystemTwo.Models.ApplicationModel", b =>

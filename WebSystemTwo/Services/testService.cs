@@ -12,15 +12,35 @@ namespace WebSystemOne.Controllers
         private readonly ILogger<testService> _logger;
         private readonly IRequestClient<GettingDocumentRequset> _gettingDocumentRequestClient;
         private readonly ApplicationDbContext _dbContext;
+        private readonly IBus _bus;
 
         public testService(
             ILogger<testService> logger,
             IRequestClient<GettingDocumentRequset> gettingDocumentRequest,
-            ApplicationDbContext dbContext)
+            ApplicationDbContext dbContext,
+            IBus bus)
         {
             _logger = logger;
             _gettingDocumentRequestClient = gettingDocumentRequest;
             _dbContext = dbContext;
+            _bus = bus;
+        }
+        public async Task UpdateStatusAsync(int ServiceNumber)
+        {
+            try
+            {
+                _logger.LogInformation("Отправка запроса на обновление статуса для ServiceNumber: {ServiceNumber}", ServiceNumber);
+                var updateStatus = new UpdateStatusRequset { ServiceNumber = ServiceNumber };
+
+                await _bus.Publish(updateStatus);
+
+                _logger.LogInformation("Запрос на обновление статуса отправлен для ServiceNumber: {ServiceNumber}", ServiceNumber);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при отправке запроса на обновление статуса для ServiceNumber: {ServiceNumber}", ServiceNumber);
+                throw;
+            }
         }
 
         public async Task ProcessDocumentsAsync()
@@ -137,7 +157,7 @@ namespace WebSystemOne.Controllers
             public long Id { get; set; }
 
             [XmlElement("ServiceNumber")]
-            public string ServiceNumber { get; set; }
+            public int ServiceNumber { get; set; }
 
             [XmlElement("Created")]
             public DateTime Created { get; set; }

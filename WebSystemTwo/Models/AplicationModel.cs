@@ -10,7 +10,7 @@ namespace WebSystemTwo.Models
         public long Id { get; set; }
 
         [Required]
-        public string ServiceNumber { get; set; }
+        public int ServiceNumber { get; set; }
 
         [Required]
         public DateTime Created { get; set; } = DateTime.UtcNow;
