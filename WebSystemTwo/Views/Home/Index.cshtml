@@ -57,104 +57,110 @@
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-                // 1) Функция переключения видимости деталей
-                function toggleDetails(id, event) {
-                    var detailsRow = document.getElementById('details-' + id);
-                    if (detailsRow.style.display === 'none') {
-                        detailsRow.style.display = '';
-                        event.target.textContent = 'Свернуть';
-                    } else {
-                        detailsRow.style.display = 'none';
-                        event.target.textContent = 'Просмотр';
-                    }
-                }
+                   // 1) Функция переключения видимости деталей
+        function toggleDetails(id, event) {
+            var detailsRow = document.getElementById('details-' + id);
+            if (detailsRow.style.display === 'none') {
+                detailsRow.style.display = '';
+                event.target.textContent = 'Свернуть';
+            } else {
+                detailsRow.style.display = 'none';
+                event.target.textContent = 'Просмотр';
+            }
+        }
 
-                // 2) При загрузке страницы скрываем все блоки с деталями
-                function initializeDetailsState() {
-                    var detailsRows = document.querySelectorAll('[id^="details-"]');
-                    detailsRows.forEach(function(row) {
-                        row.style.display = 'none';
-                    });
-                }
+        // 2) При загрузке страницы скрываем все блоки с деталями
+        function initializeDetailsState() {
+            var detailsRows = document.querySelectorAll('[id^="details-"]');
+            detailsRows.forEach(function(row) {
+                row.style.display = 'none';
+            });
+        }
 
-                // 3) Функция для запроса данных (JSON) и обновления таблицы
-                function updateApplicationsList() {
-                    $.ajax({
-                        url: '@Url.Action("GetApplications", "Home")',
-                        type: 'GET',
-                        dataType: 'json',
-                        success: function (data) {
-                            const tbody = $('#apps-tbody');
-                            tbody.empty();  // очищаем предыдущие строки
+        // 3) Функция для запроса данных (JSON) и обновления таблицы
+        function updateApplicationsList() {
+            $.ajax({
+                url: '/Home/GetApplications',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    const tbody = $('#apps-tbody');
+                    tbody.empty();  // очищаем предыдущие строки
 
-                            if (data && data.length > 0) {
-                                data.forEach(function (item) {
-                                    // Преобразуем дату
-                                    const createdDate = new Date(item.created);
-                                    const formattedDate = createdDate.toLocaleDateString('ru-RU');
+                    if (data && data.length > 0) {
+                        data.forEach(function (item) {
+                            // Преобразуем дату
+                            const createdDate = new Date(item.created);
+                            const formattedDate = createdDate.toLocaleDateString('ru-RU');
 
-        // Статус (Рассмотреть / Запрос зарегистрирован)
-                                    let statusTd;
-                                    if (item.statusName === "Запрос зарегистрирован") {
-                                        statusTd = <span class="badge badge-success">Запрос зарегистрирован</span>;
-                                    } else {
-                                        statusTd = <a href="@Url.Action("Register", "Home")?id=${item.id}" class="btn btn-warning">Рассмотреть</a>;
-                                    }
-
-                                    // Основная строка
-                                    const row = `
-                                        <tr>
-                                            <td>Отзыв о работе ресурса</td>
-                                            <td>${item.fio}</td>
-                                            <td>${formattedDate}</td>
-                                            <td>${item.serviceNumber ?? ''}</td>
-                                            <td class="text-center">
-                                                <button type="button" class="btn btn-sm btn-link" onclick="toggleDetails('${item.id}', event)">Просмотр</button>
-                                            </td>
-                                            <td class="text-center">${statusTd}</td>
-                                        </tr>`;
-
-                                    // Строка с деталями
-                                    const detailsRow = `
-                                        <tr id="details-${item.id}">
-                                            <td colspan="6" class="bg-light">
-                                                <p>${item.body ?? ''}</p>
-                                            </td>
-                                        </tr>`;
-
-                                    // Добавляем обе строки в tbody
-                                    tbody.append(row);
-                                    tbody.append(detailsRow);
-                                });
+                            // Статус (Рассмотреть / Запрос зарегистрирован)
+                            let statusHtml = '';
+                            if (item.statusName === "Запрос зарегистрирован") {
+                                statusHtml = '<span class="badge badge-success">Запрос зарегистрирован</span>';
                             } else {
-                                // Если данных нет — одна строка "Нет заявлений"
-                                tbody.append(`
-                                    <tr>
-                                        <td colspan="6" class="text-center">Нет заявлений.</td>
-                                    </tr>
-                                `);
+                                statusHtml = '<a href="/Home/Register?id=' + item.id + '" class="btn btn-warning">Рассмотреть</a>';
                             }
 
-                            // Сразу после перезаписи таблицы скрываем все детали:
-                            initializeDetailsState();
-                        },
-                        error: function () {
-                            console.error('Ошибка при получении данных');
-                        }
-                    });
-                }
+                            // Основная строка
+                            const row = `
+                                <tr>
+                                    <td>Отзыв о работе ресурса</td>
+                                    <td>${item.fio || ''}</td>
+                                    <td>${formattedDate}</td>
+                                    <td>${item.serviceNumber !== null ? item.serviceNumber : ''}</td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-sm btn-link" onclick="toggleDetails('${item.id}', event)">Просмотр</button>
+                                    </td>
+                                    <td class="text-center">${statusHtml}</td>
+                                </tr>`;
 
-                // 4) Запускаем автообновление каждые 30 секунд
-                const updateInterval = setInterval(updateApplicationsList, 5000);
+                            // Строка с деталями
+                            const detailsRow = `
+                                <tr id="details-${item.id}">
+                                    <td colspan="6" class="bg-light">
+                                        <p>${item.body || ''}</p>
+                                    </td>
+                                </tr>`;
 
-                // 5) При загрузке — прячем детали
-                document.addEventListener('DOMContentLoaded', function () {
+                            // Добавляем обе строки в tbody
+                            tbody.append(row);
+                            tbody.append(detailsRow);
+                        });
+                    } else {
+                        // Если данных нет — одна строка "Нет заявлений"
+                        tbody.append(`
+                            <tr>
+                                <td colspan="6" class="text-center">Нет заявлений.</td>
+                            </tr>
+                        `);
+                    }
+
+                    // Сразу после перезаписи таблицы скрываем все детали:
                     initializeDetailsState();
-                });
+                },
+                error: function (xhr, status, error) {
+                    console.error('Ошибка при получении данных:', error);
+                    console.log('Статус:', status);
+                    console.log('Ответ:', xhr.responseText);
+                }
+            });
+        }
 
-                // (Не обязательно) при закрытии вкладки очищаем интервал
-                window.addEventListener('unload', function () {
-                    clearInterval(updateInterval);
-                });
+        // 4) Запускаем автообновление каждые 5 секунд
+        $(document).ready(function() {
+            // Вызываем один раз сразу при загрузке
+            updateApplicationsList();
+
+            // Устанавливаем интервал для обновления
+            const updateInterval = setInterval(updateApplicationsList, 30000);
+
+            // При загрузке — прячем детали
+            initializeDetailsState();
+
+            // При закрытии вкладки очищаем интервал
+            $(window).on('unload', function () {
+                clearInterval(updateInterval);
+            });
+        });
     </script>
 }

@@ -1,8 +1,8 @@
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using SendService.Core.Commands;
-using WebSystemOne.Controllers;
 using WebSystemTwo.Data;
+using WebSystemTwo.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

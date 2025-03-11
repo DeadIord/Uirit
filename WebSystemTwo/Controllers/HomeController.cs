@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using WebSystemOne.Controllers;
 using WebSystemTwo.Data;
 using WebSystemTwo.Models;
+using WebSystemTwo.Services;
 
 namespace WebSystemTwo.Controllers
 {
@@ -39,7 +39,7 @@ namespace WebSystemTwo.Controllers
 
             await _testService.UpdateStatusAsync(application.ServiceNumber);
 
-            return RedirectToAction(nameof(IndexAsync));
+            return RedirectToAction("Index");
         }
         [HttpGet]
         public async Task<IActionResult> GetApplications()

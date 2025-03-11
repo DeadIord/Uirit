@@ -5,7 +5,7 @@ using System.Xml.Serialization;
 using WebSystemTwo.Data;
 using WebSystemTwo.Models;
 
-namespace WebSystemOne.Controllers
+namespace WebSystemTwo.Services
 {
     public class testService
     {
@@ -181,13 +181,13 @@ namespace WebSystemOne.Controllers
             {
                 return new ApplicationModel
                 {
-                    Id = this.Id,
-                    ServiceNumber = this.ServiceNumber,
-                    Created = this.Created,
-                    Body = this.Body,
-                    StatusId = this.StatusId,
-                    FIO = this.FIO,
-                    User = this.User ?? "System" // Значение по умолчанию, если поле не заполнено
+                    Id = Id,
+                    ServiceNumber = ServiceNumber,
+                    Created = Created,
+                    Body = Body,
+                    StatusId = StatusId,
+                    FIO = FIO,
+                    User = User ?? "System" // Значение по умолчанию, если поле не заполнено
                 };
             }
         }

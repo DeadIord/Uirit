@@ -39,13 +39,13 @@ builder.Services.AddMassTransit(config =>
         });
         cfg.ReceiveEndpoint("GettingRecordsConsumerQueue", x =>
         {
-            x.ConfigureConsumer<UpdateStatusHandler>(context);
+            x.ConfigureConsumer<GettingRecordsHandler>(context);
             x.ConfigureConsumeTopology = false;
             x.Bind("GettingRecordsConsumerQueue");
         });
         cfg.ReceiveEndpoint("UpdateStatusConsumerQueue", x =>
         {
-            x.ConfigureConsumer<GettingRecordsHandler>(context);
+            x.ConfigureConsumer<UpdateStatusHandler>(context);
             x.ConfigureConsumeTopology = false;
             x.Bind("UpdateStatusConsumerQueue");
         });

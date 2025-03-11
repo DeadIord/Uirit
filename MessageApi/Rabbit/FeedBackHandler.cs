@@ -53,7 +53,7 @@ namespace MessageApi.Rabbit
                 await _context.SaveChangesAsync();
 
                 _logger.LogInformation("Заявка сохранена в БД с ID {Id}", newApplication.Id);
-                return 1;
+                return 2;
             }
             catch (Exception ex)
             {
