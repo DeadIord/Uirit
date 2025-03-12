@@ -4,102 +4,192 @@
 }
 
 <div class="container">
-    <h2 class="text-center mb-4">Заявления</h2>
-
-    @if (TempData["ErrorMessage"] != null)
-    {
-        <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
-            <strong>Ошибка!</strong> @TempData["ErrorMessage"]
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="row align-items-center">
+            <div class="col">
+                <h4 class="page-title">
+                    <i class="fas fa-clipboard-list me-2"></i>Управление заявлениями
+                </h4>
+            </div>
+            <div class="col-auto">
+                <span class="badge bg-primary rounded-pill">
+                    <i class="fas fa-sync-alt me-1"></i>Обновление каждые 30 секунд
+                </span>
+            </div>
         </div>
-    }
+    </div>
 
-    @if (TempData["SuccessMessage"] != null)
-    {
-        <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
-            <strong>Успешно!</strong> @TempData["SuccessMessage"]
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
+    <!-- Alerts Section -->
+    <div id="alerts-container">
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-exclamation-circle me-2 fa-lg"></i>
+                    <strong>Ошибка!</strong> @TempData["ErrorMessage"]
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-check-circle me-2 fa-lg"></i>
+                    <strong>Успешно!</strong> @TempData["SuccessMessage"]
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+    </div>
+
+    <!-- Applications Card -->
+    <div class="card mb-4">
+        <div class="card-header bg-white py-3">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h5 class="mb-0">
+                        <i class="fas fa-file-alt me-2 text-primary"></i>Список заявлений
+                    </h5>
+                </div>
+                <div class="col-auto">
+                    <div class="input-group">
+                        <input type="text" id="search-input" class="form-control" placeholder="Поиск...">
+                        <button class="btn btn-primary" type="button" id="search-button">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
-    }
-
-    <!-- Выводим таблицу -->
-    <table id="applications-table" class="table table-bordered">
-        <thead class="thead-light">
-            <tr>
-                <th>Наименование</th>
-                <th>Отправитель</th>
-                <th>Дата</th>
-                <th>Номер заявления</th>
-                <th>Просмотр</th>
-                <th>Рассмотреть</th>
-            </tr>
-        </thead>
-        <tbody id="apps-tbody">
-            @if (Model != null && Model.Any())
-            {
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>Отзыв о работе ресурса</td>
-                        <td>@item.FIO</td>
-                        <td>@item.Created.ToString("dd.MM.yyyy")</td>
-                        <td>@item.ServiceNumber</td>
-                        <td class="text-center">
-                            <button type="button" class="btn btn-sm btn-link" onclick="toggleDetails('@item.Id', event)">Просмотр</button>
-                        </td>
-                        <td class="text-center">
-                            @if (item.Status.StatusName == "Запрос зарегистрирован")
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table id="applications-table" class="table mb-0">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-file-signature me-1"></i> Наименование</th>
+                            <th><i class="fas fa-user me-1"></i> Отправитель</th>
+                            <th><i class="fas fa-calendar-alt me-1"></i> Дата</th>
+                            <th><i class="fas fa-hashtag me-1"></i> Номер заявления</th>
+                            <th class="text-center"><i class="fas fa-eye me-1"></i> Просмотр</th>
+                            <th class="text-center"><i class="fas fa-tasks me-1"></i> Статус</th>
+                        </tr>
+                    </thead>
+                    <tbody id="apps-tbody">
+                        @if (Model != null && Model.Any())
+                        {
+                            @foreach (var item in Model)
                             {
-                                <span class="badge badge-success text-dark">Запрос зарегистрирован</span>
+                                <tr>
+                                    <td data-label="Наименование">
+                                        <div class="d-flex align-items-center">
+                                            <span class="fas fa-comment-dots text-primary me-2"></span>
+                                            <span>Отзыв о работе ресурса</span>
+                                        </div>
+                                    </td>
+                                    <td data-label="Отправитель">
+                                        <div class="d-flex align-items-center">
+                                            <span class="fas fa-user-circle text-secondary me-2"></span>
+                                            <span>@item.FIO</span>
+                                        </div>
+                                    </td>
+                                    <td data-label="Дата">
+                                        <div class="d-flex align-items-center">
+                                            <span class="fas fa-calendar-day text-info me-2"></span>
+                                            <span>@item.Created.ToString("dd.MM.yyyy")</span>
+                                        </div>
+                                    </td>
+                                    <td data-label="Номер заявления">
+                                        <div class="d-flex align-items-center">
+                                            <span class="fas fa-barcode text-dark me-2"></span>
+                                            <span>@item.ServiceNumber</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-center" data-label="Просмотр">
+                                        <button type="button" class="btn btn-link" onclick="toggleDetails('@item.Id', event)">
+                                            <i class="fas fa-eye me-1"></i> Просмотр
+                                        </button>
+                                    </td>
+                                    <td class="text-center" data-label="Статус">
+                                        @if (item.Status.StatusName == "Запрос зарегистрирован")
+                                        {
+                                            <span class="badge badge-success">
+                                                <i class="fas fa-check-circle me-1"></i>
+                                                Запрос зарегистрирован
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <a href="@Url.Action("Register", "Home", new { id = item.Id })" class="btn btn-warning">
+                                                <i class="fas fa-clipboard-check me-1"></i>
+                                                Рассмотреть
+                                                <span class="animated-icon">→</span>
+                                            </a>
+                                        }
+                                    </td>
+                                </tr>
+                                <tr id="details-@item.Id" class="details-row">
+                                    <td colspan="6">
+                                        <div class="details-content p-3">
+                                            <h6 class="mb-2 text-primary">
+                                                <i class="fas fa-comment-alt me-2"></i>Текст заявления:
+                                            </h6>
+                                            <p class="bg-white p-3 rounded">@item.Body</p>
+                                        </div>
+                                    </td>
+                                </tr>
                             }
-                            else
-                            {
-                                <a href="@Url.Action("Register", "Home", new { id = item.Id })" class="btn btn-warning">Рассмотреть</a>
-                            }
-                        </td>
-                    </tr>
-                    <tr id="details-@item.Id">
-                        <td colspan="6" class="bg-light">
-                            <p>@item.Body</p>
-                        </td>
-                    </tr>
-                }
-            }
-            else
-            {
-                <tr>
-                    <td colspan="6" class="text-center">Нет заявлений.</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center py-4">
+                                    <div class="empty-state">
+                                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                        <h5 class="text-muted">Нет заявлений</h5>
+                                        <p class="text-muted small">На данный момент заявления отсутствуют.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // 1) Функция переключения видимости деталей
+        // 1) Функция переключения видимости деталей с анимацией
         function toggleDetails(id, event) {
             var detailsRow = document.getElementById('details-' + id);
-            if (detailsRow.style.display === 'none') {
-                detailsRow.style.display = '';
-                event.target.textContent = 'Свернуть';
+            var button = event.currentTarget;
+
+            // Проверяем текущее состояние видимости
+            var isVisible = $(detailsRow).is(':visible');
+
+            if (!isVisible) {
+                // Открываем детали
+                $(detailsRow).fadeIn(300);
+                button.innerHTML = '<i class="fas fa-eye-slash me-1"></i> Свернуть';
+                button.classList.add('active');
             } else {
-                detailsRow.style.display = 'none';
-                event.target.textContent = 'Просмотр';
+                // Закрываем детали
+                $(detailsRow).fadeOut(300);
+                button.innerHTML = '<i class="fas fa-eye me-1"></i> Просмотр';
+                button.classList.remove('active');
             }
         }
 
         // 2) При загрузке страницы скрываем все блоки с деталями
         function initializeDetailsState() {
             var detailsRows = document.querySelectorAll('[id^="details-"]');
-            detailsRows.forEach(function(row) {
-                row.style.display = 'none';
+            detailsRows.forEach(function (row) {
+                $(row).hide();
             });
         }
 
@@ -111,79 +201,240 @@
                 dataType: 'json',
                 success: function (data) {
                     const tbody = $('#apps-tbody');
-                    tbody.empty();  // очищаем предыдущие строки
 
-                    if (data && data.length > 0) {
-                        data.forEach(function (item) {
-                            // Преобразуем дату
-                            const createdDate = new Date(item.created);
-                            const formattedDate = createdDate.toLocaleDateString('ru-RU');
+                    // Показываем индикатор обновления
+                    $('.badge.bg-primary').addClass('pulse');
 
-                            // Статус (Рассмотреть / Запрос зарегистрирован)
-                            let statusHtml = '';
-                            if (item.statusName === "Запрос зарегистрирован") {
-                                statusHtml = '<span class="badge badge-success text-dark">Запрос зарегистрирован</span>';
-                            } else {
-                                statusHtml = '<a href="/Home/Register?id=' + item.id + '" class="btn btn-warning">Рассмотреть</a>';
-                            }
+                    setTimeout(function () {
+                        tbody.empty();  // очищаем предыдущие строки
 
-                            // Основная строка
-                            const row = `
-                                <tr>
-                                    <td>Отзыв о работе ресурса</td>
-                                    <td>${item.fio || ''}</td>
-                                    <td>${formattedDate}</td>
-                                    <td>${item.serviceNumber !== null ? item.serviceNumber : ''}</td>
-                                    <td class="text-center">
-                                        <button type="button" class="btn btn-sm btn-link" onclick="toggleDetails('${item.id}', event)">Просмотр</button>
-                                    </td>
-                                    <td class="text-center">${statusHtml}</td>
-                                </tr>`;
+                        if (data && data.length > 0) {
+                            data.forEach(function (item) {
+                                // Преобразуем дату
+                                const createdDate = new Date(item.created);
+                                const formattedDate = createdDate.toLocaleDateString('ru-RU');
 
-                            // Строка с деталями
-                            const detailsRow = `
-                                <tr id="details-${item.id}">
-                                    <td colspan="6" class="bg-light">
-                                        <p>${item.body || ''}</p>
-                                    </td>
-                                </tr>`;
+                                // Статус (Рассмотреть / Запрос зарегистрирован)
+                                let statusHtml = '';
+                                if (item.statusName === "Запрос зарегистрирован") {
+                                    statusHtml = '<span class="badge badge-success"><i class="fas fa-check-circle me-1"></i>Запрос зарегистрирован</span>';
+                                } else {
+                                    statusHtml = '<a href="/Home/Register?id=' + item.id + '" class="btn btn-warning"><i class="fas fa-clipboard-check me-1"></i>Рассмотреть<span class="animated-icon">→</span></a>';
+                                }
 
-                            // Добавляем обе строки в tbody
-                            tbody.append(row);
-                            tbody.append(detailsRow);
-                        });
-                    } else {
-                        // Если данных нет — одна строка "Нет заявлений"
-                        tbody.append(`
-                            <tr>
-                                <td colspan="6" class="text-center">Нет заявлений.</td>
-                            </tr>
-                        `);
-                    }
+                                // Основная строка
+                                const row = `
+                                            <tr>
+                                                <td data-label="Наименование">
+                                                    <div class="d-flex align-items-center">
+                                                        <span class="fas fa-comment-dots text-primary me-2"></span>
+                                                        <span>Отзыв о работе ресурса</span>
+                                                    </div>
+                                                </td>
+                                                <td data-label="Отправитель">
+                                                    <div class="d-flex align-items-center">
+                                                        <span class="fas fa-user-circle text-secondary me-2"></span>
+                                                        <span>${item.fio || ''}</span>
+                                                    </div>
+                                                </td>
+                                                <td data-label="Дата">
+                                                    <div class="d-flex align-items-center">
+                                                        <span class="fas fa-calendar-day text-info me-2"></span>
+                                                        <span>${formattedDate}</span>
+                                                    </div>
+                                                </td>
+                                                <td data-label="Номер заявления">
+                                                    <div class="d-flex align-items-center">
+                                                        <span class="fas fa-barcode text-dark me-2"></span>
+                                                        <span>${item.serviceNumber !== null ? item.serviceNumber : ''}</span>
+                                                    </div>
+                                                </td>
+                                                <td class="text-center" data-label="Просмотр">
+                                                    <button type="button" class="btn btn-link" onclick="toggleDetails('${item.id}', event)">
+                                                        <i class="fas fa-eye me-1"></i> Просмотр
+                                                    </button>
+                                                </td>
+                                                <td class="text-center" data-label="Статус">${statusHtml}</td>
+                                            </tr>`;
 
-                    // Сразу после перезаписи таблицы скрываем все детали:
-                    initializeDetailsState();
+                                const detailsRow = `
+                                            <tr id="details-${item.id}" class="details-row">
+                                                <td colspan="6">
+                                                    <div class="details-content p-3">
+                                                        <h6 class="mb-2 text-primary">
+                                                            <i class="fas fa-comment-alt me-2"></i>Текст заявления:
+                                                        </h6>
+                                                        <p class="bg-white p-3 rounded">${item.body || ''}</p>
+                                                    </div>
+                                                </td>
+                                            </tr>`;
+
+                                tbody.append(row);
+                                tbody.append(detailsRow);
+                            });
+                        } else {
+                            tbody.append(`
+                                        <tr>
+                                            <td colspan="6" class="text-center py-4">
+                                                <div class="empty-state">
+                                                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                                    <h5 class="text-muted">Нет заявлений</h5>
+                                                    <p class="text-muted small">На данный момент заявления отсутствуют.</p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    `);
+                        }
+
+                        initializeDetailsState();
+
+                        $('.badge.bg-primary').removeClass('pulse');
+
+                        showNotification('Данные успешно обновлены');
+                    }, 500);
                 },
                 error: function (xhr, status, error) {
                     console.error('Ошибка при получении данных:', error);
-                    console.log('Статус:', status);
-                    console.log('Ответ:', xhr.responseText);
+                    showErrorNotification('Ошибка при получении данных');
                 }
             });
         }
 
-        // 4) Запускаем автообновление каждые 30 секунд
-        $(document).ready(function() {
-            // Вызываем один раз сразу при загрузке
+        function showNotification(message) {
+            const notification = $(`
+                        <div class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                            <div class="d-flex">
+                                <div class="toast-body">
+                                    <i class="fas fa-check-circle me-2"></i>${message}
+                                </div>
+                                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                            </div>
+                        </div>
+                    `);
+
+            $('.toast-container').append(notification);
+
+            const toast = new bootstrap.Toast(notification, {
+                delay: 3000
+            });
+            toast.show();
+
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        function showErrorNotification(message) {
+            const notification = $(`
+                        <div class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                            <div class="d-flex">
+                                <div class="toast-body">
+                                    <i class="fas fa-exclamation-circle me-2"></i>${message}
+                                </div>
+                                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                            </div>
+                        </div>
+                    `);
+
+            $('.toast-container').append(notification);
+
+            const toast = new bootstrap.Toast(notification, {
+                delay: 5000
+            });
+            toast.show();
+
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
+        }
+
+        $(document).ready(function () {
+            $('body').append('<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 11"></div>');
+
+            $('<style>')
+                .text(`
+                            .pulse {
+                                animation: pulse-animation 1.5s infinite;
+                            }
+        @@keyframes pulse-animation {
+                                0% { opacity: 1; }
+                                50% { opacity: 0.5; }
+                                100% { opacity: 1; }
+                            }
+
+                            .details-row {
+                                transition: all 0.3s ease;
+                            }
+
+                            .btn-link.active {
+                                background-color: rgba(52, 152, 219, 0.1);
+                            }
+
+                            .empty-state {
+                                padding: 2rem;
+                                display: flex;
+                                flex-direction: column;
+                                align-items: center;
+                                justify-content: center;
+                            }
+
+                            /* Добавляем анимацию при поиске */
+        @@keyframes highlight {
+                                0% { background-color: rgba(52, 152, 219, 0.2); }
+                                100% { background-color: transparent; }
+                            }
+
+                            .highlight {
+                                animation: highlight 2s ease-out;
+                            }
+                        `)
+                .appendTo('head');
+
             updateApplicationsList();
 
-            // Устанавливаем интервал для обновления
             const updateInterval = setInterval(updateApplicationsList, 30000);
 
-            // При загрузке — прячем детали
             initializeDetailsState();
 
-            // При закрытии вкладки очищаем интервал
+            $('#search-button').click(function () {
+                const searchText = $('#search-input').val().toLowerCase();
+
+                if (searchText.length > 0) {
+                    $('tr').removeClass('highlight');
+
+                    let found = false;
+                    $('tbody tr:not([id^="details-"])').each(function () {
+                        const rowText = $(this).text().toLowerCase();
+                        if (rowText.includes(searchText)) {
+                            $(this).addClass('highlight');
+                            found = true;
+
+                            const offset = $(this).offset().top;
+                            if (offset < $(window).scrollTop() || offset > ($(window).scrollTop() + $(window).height())) {
+                                $('html, body').animate({
+                                    scrollTop: $(this).offset().top - 100
+                                }, 500);
+                            }
+                        }
+                    });
+
+                    if (found) {
+                        showNotification('Найдены совпадения');
+                    } else {
+                        showErrorNotification('Совпадений не найдено');
+                    }
+                } else {
+                    showErrorNotification('Введите текст для поиска');
+                }
+            });
+
+            $('#search-input').keypress(function (e) {
+                if (e.which === 13) {
+                    $('#search-button').click();
+                    return false;
+                }
+            });
+
             $(window).on('unload', function () {
                 clearInterval(updateInterval);
             });

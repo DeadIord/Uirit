@@ -1,0 +1,302 @@
+﻿/* Общие стили для страниц авторизации */
+:root {
+    --primary-color: #4361ee;
+    --primary-light: #4895ef;
+    --primary-dark: #3f37c9;
+    --secondary: #560bad;
+    --success: #1cc88a;
+    --info: #36b9cc;
+    --warning: #f6c23e;
+    --danger: #e74a3b;
+    --light: #f8f9fc;
+    --dark: #292b2c;
+    --grey: #6c757d;
+    --white: #fff;
+    --gradient: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary) 100%);
+}
+
+/* Auth Card */
+.auth-card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+    .auth-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+    }
+
+.auth-header {
+    background: var(--gradient);
+    padding: 2rem;
+    color: var(--white);
+    text-align: center;
+}
+
+.auth-icon {
+    background: rgba(255, 255, 255, 0.2);
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.25rem auto;
+}
+
+    .auth-icon i {
+        font-size: 2.5rem;
+        color: var(--white);
+    }
+
+.auth-title {
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.auth-subtitle {
+    font-weight: 400;
+    opacity: 0.8;
+    font-size: 0.9rem;
+}
+
+.auth-body {
+    padding: 2.5rem;
+    background-color: var(--white);
+}
+
+/* Form Elements */
+.form-floating {
+    margin-bottom: 1.25rem;
+}
+
+    .form-floating > label {
+        padding: 0.75rem 1rem;
+        color: #6c757d;
+    }
+
+    .form-floating > .form-control {
+        padding: 0.75rem 1rem;
+        height: calc(3.5rem + 2px);
+        border-radius: 8px;
+        border: 2px solid #eaecf0;
+        transition: all 0.2s ease;
+    }
+
+        .form-floating > .form-control:focus {
+            box-shadow: none;
+            border-color: var(--primary-color);
+        }
+
+            .form-floating > .form-control:focus + label {
+                color: var(--primary-color);
+            }
+
+.validation-error {
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+/* Custom Checkbox */
+.custom-checkbox {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+    .custom-checkbox .form-check-input {
+        width: 1.25rem;
+        height: 1.25rem;
+        margin-right: 0.5rem;
+        cursor: pointer;
+    }
+
+        .custom-checkbox .form-check-input:checked {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+    .custom-checkbox .form-check-label {
+        font-size: 0.9rem;
+        color: #495057;
+        cursor: pointer;
+    }
+
+/* Buttons */
+.btn-auth {
+    padding: 0.75rem 1.25rem;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .btn-auth::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.2));
+        clip-path: polygon(0 70%, 100% 70%, 100% 100%, 0% 100%);
+        transition: 0.3s ease;
+    }
+
+    .btn-auth:hover::after {
+        clip-path: polygon(0 60%, 100% 60%, 100% 100%, 0% 100%);
+    }
+
+.btn-primary-gradient {
+    background: var(--gradient);
+    border: none;
+    color: white;
+    box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+}
+
+    .btn-primary-gradient:hover {
+        box-shadow: 0 6px 20px rgba(67, 97, 238, 0.4);
+        transform: translateY(-2px);
+    }
+
+.btn-lg {
+    font-size: 1rem;
+    padding: 0.875rem 1.5rem;
+}
+
+.btn-icon {
+    margin-right: 0.5rem;
+}
+
+/* Links */
+.auth-link {
+    color: var(--primary-color);
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+    .auth-link:hover {
+        color: var(--primary-dark);
+        text-decoration: underline;
+    }
+
+/* Dividers */
+.divider {
+    display: flex;
+    align-items: center;
+    margin: 1.5rem 0;
+    color: #6c757d;
+    font-size: 0.875rem;
+}
+
+    .divider:before,
+    .divider:after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: #e0e0e0;
+    }
+
+    .divider:before {
+        margin-right: 1rem;
+    }
+
+    .divider:after {
+        margin-left: 1rem;
+    }
+
+/* Animation */
+.fade-in-up {
+    animation: fadeInUp 0.5s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+    .auth-body {
+        padding: 1.5rem;
+    }
+
+    .auth-header {
+        padding: 1.5rem;
+    }
+}
+
+/* Sidebar Nav */
+.profile-sidebar {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.profile-sidebar-header {
+    background: var(--gradient);
+    padding: 1.5rem;
+    color: white;
+}
+
+.profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+    .profile-avatar i {
+        font-size: 2rem;
+        color: white;
+    }
+
+.profile-name {
+    text-align: center;
+    font-weight: 600;
+    margin-bottom: 0;
+}
+
+.nav-pills .nav-link {
+    border-radius: 0;
+    padding: 0.75rem 1.5rem;
+    color: #495057;
+    font-weight: 500;
+    border-left: 3px solid transparent;
+    transition: all 0.3s ease;
+}
+
+    .nav-pills .nav-link:hover {
+        background-color: rgba(67, 97, 238, 0.05);
+    }
+
+    .nav-pills .nav-link.active {
+        background-color: rgba(67, 97, 238, 0.1);
+        color: var(--primary-color);
+        border-left: 3px solid var(--primary-color);
+    }
+
+    .nav-pills .nav-link i {
+        margin-right: 0.5rem;
+    }

@@ -26,7 +26,7 @@ namespace WebSystemTwo.Controllers
         {
             var applications = await _db.Aplication
                 .Include(a => a.Status)
-                .OrderByDescending(a => a.Created) // Сортировка по дате создания по убыванию
+                .OrderByDescending(a => a.Created)
                 .ToListAsync();
             return View(applications);
         }
@@ -42,10 +42,9 @@ namespace WebSystemTwo.Controllers
 
             try
             {
-                // Отправляем запрос в RabbitMQ
                 var result = await _testService.UpdateStatusAsync(application.ServiceNumber);
 
-                // Только если отправка успешна, меняем статус в локальной БД
+
                 if (result)
                 {
                     application.StatusId = 4;
@@ -54,8 +53,7 @@ namespace WebSystemTwo.Controllers
                 }
                 else
                 {
-                    // Сообщение об ошибке
-                    TempData["ErrorMessage"] = "Не удалось обновить статус. RabbitMQ недоступен. Попробуйте позже.";
+                    TempData["ErrorMessage"] = "Не удалось обновить статус. Сервис недоступен. Попробуйте позже.";
                 }
             }
             catch (Exception ex)
@@ -82,7 +80,7 @@ namespace WebSystemTwo.Controllers
                     a.Status.StatusName,
                     a.Body
                 })
-                .OrderByDescending(a => a.Created) // Сортировка по дате создания по убыванию
+                .OrderByDescending(a => a.Created)
                 .ToListAsync();
 
             return Json(applications);

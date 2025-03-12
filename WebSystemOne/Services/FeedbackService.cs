@@ -49,7 +49,10 @@ namespace WebSystemOne.Services
 
                 _logger.LogInformation("Отправка запроса отзыва: {LastName} {FirstName}", lastName, firstName);
 
-                var response = await _feedBackRequestClient.GetResponse<FeedBackResponse>(feedBackRequest);
+                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+
+                var responseTask = _feedBackRequestClient.GetResponse<FeedBackResponse>(feedBackRequest, cts.Token);
+                var response = await responseTask;
 
                 _logger.LogInformation("Получен ответ на запрос отзыва");
                 return response.Message.Data;

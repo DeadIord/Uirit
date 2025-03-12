@@ -1,6 +1,5 @@
 using MassTransit;
 using SendService.Core.Commands;
-
 using Microsoft.EntityFrameworkCore;
 using WebSystemOne.Data;
 using WebSystemOne.Models;

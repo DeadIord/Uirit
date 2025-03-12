@@ -43,6 +43,7 @@ namespace WebSystemOne.Controllers
                 .OrderByDescending(a => a.Created)
                 .Select(a => new StatementViewModel
                 {
+                    Id = a.Id,
                     ServiceNumber = a.ServiceNumber.ToString(),
                     Created = a.Created,
                     Name = a.Status.Name
@@ -220,6 +221,7 @@ namespace WebSystemOne.Controllers
                 .OrderByDescending(a => a.Created)
                 .Select(a => new StatementViewModel
                 {
+                    Id = a.Id,
                     ServiceNumber = a.ServiceNumber.ToString(),
                     Created = a.Created,
                     Name = a.Status.Name
