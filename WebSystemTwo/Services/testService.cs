@@ -7,6 +7,7 @@ using WebSystemTwo.Models;
 
 namespace WebSystemTwo.Services
 {
+
     public class testService
     {
         private readonly ILogger<testService> _logger;
@@ -25,24 +26,37 @@ namespace WebSystemTwo.Services
             _dbContext = dbContext;
             _bus = bus;
         }
-        public async Task UpdateStatusAsync(int ServiceNumber)
+
+        public async Task<bool> UpdateStatusAsync(int ServiceNumber)
         {
             try
             {
                 _logger.LogInformation("Отправка запроса на обновление статуса для ServiceNumber: {ServiceNumber}", ServiceNumber);
+
                 var updateStatus = new UpdateStatusRequset { ServiceNumber = ServiceNumber };
 
-                await _bus.Publish(updateStatus);
+                // Создаем CancellationToken с таймаутом 5 секунд
+                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+
+                // Запускаем задачу отправки сообщения в RabbitMQ с таймаутом
+                var publishTask = _bus.Publish(updateStatus, cts.Token);
+
+                await publishTask;
 
                 _logger.LogInformation("Запрос на обновление статуса отправлен для ServiceNumber: {ServiceNumber}", ServiceNumber);
+                return true;
+            }
+            catch (OperationCanceledException)
+            {
+                _logger.LogWarning("Таймаут при отправке запроса на обновление статуса для ServiceNumber: {ServiceNumber}. RabbitMQ недоступен.", ServiceNumber);
+                return false;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Ошибка при отправке запроса на обновление статуса для ServiceNumber: {ServiceNumber}", ServiceNumber);
-                throw;
+                return false;
             }
         }
-
         public async Task ProcessDocumentsAsync()
         {
             try

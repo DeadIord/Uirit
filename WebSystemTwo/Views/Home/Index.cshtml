@@ -1,11 +1,30 @@
 ﻿@model IEnumerable<WebSystemTwo.Models.ApplicationModel>
-
 @{
     ViewData["Title"] = "Заявления";
 }
 
 <div class="container">
     <h2 class="text-center mb-4">Заявления</h2>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+            <strong>Ошибка!</strong> @TempData["ErrorMessage"]
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+            <strong>Успешно!</strong> @TempData["SuccessMessage"]
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
 
     <!-- Выводим таблицу -->
     <table id="applications-table" class="table table-bordered">
@@ -35,7 +54,7 @@
                         <td class="text-center">
                             @if (item.Status.StatusName == "Запрос зарегистрирован")
                             {
-                                <span class="badge badge-success">Запрос зарегистрирован</span>
+                                <span class="badge badge-success text-dark">Запрос зарегистрирован</span>
                             }
                             else
                             {
@@ -50,14 +69,21 @@
                     </tr>
                 }
             }
+            else
+            {
+                <tr>
+                    <td colspan="6" class="text-center">Нет заявлений.</td>
+                </tr>
+            }
         </tbody>
     </table>
 </div>
 
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-                   // 1) Функция переключения видимости деталей
+        // 1) Функция переключения видимости деталей
         function toggleDetails(id, event) {
             var detailsRow = document.getElementById('details-' + id);
             if (detailsRow.style.display === 'none') {
@@ -96,7 +122,7 @@
                             // Статус (Рассмотреть / Запрос зарегистрирован)
                             let statusHtml = '';
                             if (item.statusName === "Запрос зарегистрирован") {
-                                statusHtml = '<span class="badge badge-success">Запрос зарегистрирован</span>';
+                                statusHtml = '<span class="badge badge-success text-dark">Запрос зарегистрирован</span>';
                             } else {
                                 statusHtml = '<a href="/Home/Register?id=' + item.id + '" class="btn btn-warning">Рассмотреть</a>';
                             }
@@ -146,7 +172,7 @@
             });
         }
 
-        // 4) Запускаем автообновление каждые 5 секунд
+        // 4) Запускаем автообновление каждые 30 секунд
         $(document).ready(function() {
             // Вызываем один раз сразу при загрузке
             updateApplicationsList();
